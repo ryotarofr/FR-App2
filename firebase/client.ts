@@ -18,9 +18,13 @@ const firebaseConfig = {
 }
 
 // Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
+if (!getApps().length) {
+	initializeApp(firebaseConfig)
+  
+}
+// const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
 const db = getFirestore()
 const auth = getAuth()
 
-export default app
+// export default app
 export { auth, db }

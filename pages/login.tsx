@@ -1,4 +1,4 @@
-import { logout, signInWithGithub } from '@/lib/auth';
+
 import LoginButton from '../components/Login';
 import { useState } from 'react'
 import styles from "../styles/Login.module.css"

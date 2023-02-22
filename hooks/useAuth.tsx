@@ -1,8 +1,10 @@
 import { auth } from '@/firebase/client'
 import {
   createUserWithEmailAndPassword,
+  GithubAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   User,
 } from 'firebase/auth'
@@ -71,6 +73,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       .catch((error) => alert(error.message))
       .finally(() => setLoading(false))
   }
+
+
+  // const signInWithGithub = async () => {
+  //   setLoading(true)
+  //   const provider = new GithubAuthProvider()
+  //   await signInWithPopup(auth, provider)
+  //     .then((userCredential) => {
+  //       setUser(userCredential.user)
+  //       router.push('/')
+  //       setLoading(false)
+  //     })
+  //     .catch((error) => alert(error.message))
+  //     .finally(() => setLoading(false))
+
+  // }
 
   const signIn = async (email: string, password: string) => {
     setLoading(true)

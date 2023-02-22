@@ -1,12 +1,8 @@
+import { User } from '@/types/User';
 import { useForm } from 'react-hook-form'
 import LoginButton from '../components/Login';
 
 
-type User = {
-  name: string
-  email: string
-  password: string
-}
 
 
 const Account = () => {

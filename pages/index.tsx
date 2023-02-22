@@ -2,10 +2,30 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
+import useAuth from '@/hooks/useAuth'
+
+
+import payments from '../lib/stripe'
+import { getProducts, Product } from '@stripe/firestore-stripe-payments'
+import useSubscription from '../hooks/useSubscription'
+import Plans from '../components/Plans/Plans'
+
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+
+interface Props {
+  products: Product[]
+}
+
+export default function Home({ products }: Props) {
+  const { user, logout, loading } = useAuth()
+
+  const subscription = useSubscription(user)
+  if (loading || subscription === null) return null
+
+  if (!subscription) return <Plans products={products} />
+
   return (
     <>
       <Head>
@@ -15,6 +35,12 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
+        <p
+          className={styles.logout}
+          onClick={logout}
+        >
+          SignOut
+        </p>
         <div className={styles.description}>
           <p>
             Get started by editing&nbsp;
@@ -120,4 +146,49 @@ export default function Home() {
       </main>
     </>
   )
+}
+
+
+
+export const getServerSideProps = async () => {
+  const products = await getProducts(payments, {
+    includePrices: true,
+    activeOnly: true,
+  })
+    .then((res) => res)
+    .catch((error) => console.log(error.message))
+
+  // const [
+  //   netflixOriginals,
+  //   trendingNow,
+  //   topRated,
+  //   actionMovies,
+  //   comedyMovies,
+  //   horrorMovies,
+  //   romanceMovies,
+  //   documentaries,
+  // ] = await Promise.all([
+  //   fetch(requests.fetchNetflixOriginals).then((res) => res.json()),
+  //   fetch(requests.fetchTrending).then((res) => res.json()),
+  //   fetch(requests.fetchTopRated).then((res) => res.json()),
+  //   fetch(requests.fetchActionMovies).then((res) => res.json()),
+  //   fetch(requests.fetchComedyMovies).then((res) => res.json()),
+  //   fetch(requests.fetchHorrorMovies).then((res) => res.json()),
+  //   fetch(requests.fetchRomanceMovies).then((res) => res.json()),
+  //   fetch(requests.fetchDocumentaries).then((res) => res.json()),
+  // ])
+
+  return {
+    props: {
+      // netflixOriginals: netflixOriginals.results,
+      // trendingNow: trendingNow.results,
+      // topRated: topRated.results,
+      // actionMovies: actionMovies.results,
+      // comedyMovies: comedyMovies.results,
+      // horrorMovies: horrorMovies.results,
+      // romanceMovies: romanceMovies.results,
+      // documentaries: documentaries.results,
+      products,
+    },
+  }
 }
